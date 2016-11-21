@@ -4,12 +4,6 @@ function killall ()
   pgrep "^${1}$"  | xargs $killer
 } 
 
-function hello ()
-{
-  to=$1
-  cat | msmtp -a laboriacuboniks@bastardi.net $to
-}
-
 function xkcdpasswd ()
 {
   sort --sort=random /usr/share/dict/words \
