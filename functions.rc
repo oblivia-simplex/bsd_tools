@@ -1,3 +1,7 @@
+for rc in colors.rc; do
+  [ -f $rc ] && source ~/.${rc}
+done
+
 function killall () 
 {
   killer="kill"
@@ -14,7 +18,31 @@ function xkcdpasswd ()
 
 function shred ()
 {
-  dd if=/dev/urandom of=$1 count=$(wc -c $1 | awk '{ print $1 }') bs=1
+  for f in $*; do
+    dd if=/dev/urandom of=$f count=$(wc -c $f | awk '{ print $1 }') bs=1
+  done
+}
+
+function shredR ()
+{
+  find $1 -type f \
+    | while read f; do
+       shred $f
+      done
+}
+
+function srm ()
+{
+  for item in $*; do
+    shred $item
+    rm -f $item
+  done
+}
+
+function srmR ()
+{
+  shredR $1
+  rm -rf $1
 }
 
 function swap ()
@@ -26,4 +54,45 @@ function swap ()
   echo "swapped $1 and $2"
 }
 
+function gb () {
+  git branch 2> /dev/null | pcregrep -o '(?<=\* ).+' | tr \\n ' '
+}
 
+mkdir -p /tmp/trash
+function rm ()
+{
+  [ "x$1" = "x-rf" ] && shift
+  mv $* /tmp/trash/
+  echo "Moved $* to /tmp/trash/"
+}
+
+function getmac ()
+{
+  ifconfig $1 | pcregrep -o '(?<=lladdr )([0-9a-f][0-9a-f]:){5}[0-9a-f][0-9a-f]'
+}
+
+function changemac ()
+{
+  IF=$1
+  MAC=$2
+  b="${GREEN}[+]${DARKGREEN}"
+
+  if [ `getmac ${IF}` = $MAC ]; then
+    echo MAC already set
+  else
+    echo -e "$b Taking down ${IF}..."
+    sudo ifconfig ${IF} down
+    echo -e "$b Changing mac address to $MAC" 
+    sudo ifconfig ${IF} lladdr $MAC
+    echo -e "$b Bringing ${IF} back up..."
+    sudo ifconfig ${IF} up
+    echo -e "$b Acquiring dhcp lease for ${IF}..."
+    sudo dhclient ${IF}
+  fi
+
+  echo "$b Testing..."
+  while : ; do
+    ping -c 1 google.com && break
+  done
+  echo -e "${GREEN}READY${RESET}"
+}

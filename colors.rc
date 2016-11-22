@@ -1,3 +1,4 @@
+## ANSI escape sequences for colours, zsh format
 export DARKGREEN=$'\e[00;32m'
 export GREEN=$'\e[01;32m'
 export TEAL=$'\e[00;36m'
