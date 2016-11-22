@@ -77,13 +77,13 @@ function changemac ()
   MAC=$2
   b="${GREEN}[+]${DARKGREEN}"
 
-  if [ `getmac ${IF}` = $MAC ]; then
+  if [ `getmac ${IF}` = ${MAC} ]; then
     echo MAC already set
   else
     echo -e "$b Taking down ${IF}..."
     sudo ifconfig ${IF} down
-    echo -e "$b Changing mac address to $MAC" 
-    sudo ifconfig ${IF} lladdr $MAC
+    echo -e "$b Changing mac address to ${MAC}" 
+    sudo ifconfig ${IF} lladdr ${MAC}
     echo -e "$b Bringing ${IF} back up..."
     sudo ifconfig ${IF} up
     echo -e "$b Acquiring dhcp lease for ${IF}..."
