@@ -97,3 +97,16 @@ function changemac ()
   done
   echo -e "${GREEN}READY${RESET}"
 }
+
+
+function watch () 
+{
+  DELAY=$1
+  shift
+  CMD=$*
+  while :; do
+    $CMD
+    sleep $DELAY
+  done
+}
+
