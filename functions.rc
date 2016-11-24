@@ -5,7 +5,8 @@ done
 function killall () 
 {
   killer="kill"
-  pgrep "^${1}$"  | xargs $killer
+  pgrep "^${1}$"  | tee >(cat <(echo -n "Killing ") -) \
+                  | xargs $killer && echo "Killed" 
 } 
 
 function xkcdpasswd ()
@@ -78,7 +79,7 @@ function changemac ()
   b="${GREEN}[+]${DARKGREEN}"
 
   if [ `getmac ${IF}` = ${MAC} ]; then
-    echo MAC already set
+    echo -e "${GREEN}MAC already set${RESET}"
   else
     echo -e "$b Taking down ${IF}..."
     sudo ifconfig ${IF} down
