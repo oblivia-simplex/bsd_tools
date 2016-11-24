@@ -2,10 +2,9 @@ for rc in "zshrc" "functions.rc" "colors.rc"; do
   [ -f ./${rc} ] && ln -sf `pwd`/${rc} ~/.${rc}
 done
 
-source ~/.envvars
-source ~/.colors.rc
-source ~/.functions.rc
-source ~/.aliases
+for rc in "envvars" "colors.rc" "functions.rc" "aliases"; do
+  touch ~/.${rc} && source ~/.${rc}
+done
 
 function errbang () {
   (( $? != 0 )) && echo -ne "${PINK}! ${RESET}"
