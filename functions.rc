@@ -4,9 +4,13 @@ done
 
 function killall () 
 {
+  FLAGS="$2"
   killer="kill"
-  pgrep "^${1}$"  | tee >(cat <(echo -n "Killing ") -) \
-                  | xargs $killer && echo "Killed" 
+  pgrep "^${1}$" \
+    | tee >(cat <(echo -n "Killing ") - \
+                <([ -n "$FLAGS" ] && echo "with $FLAGS")) \
+    | xargs $killer $FLAGS && (pgrep -q ${1} && echo "Killed") 
+  true
 } 
 
 function xkcdpasswd ()
@@ -63,8 +67,10 @@ mkdir -p /tmp/trash
 function rm ()
 {
   [ "x$1" = "x-rf" ] && shift
-  mv $* /tmp/trash/
-  echo "Moved $* to /tmp/trash/"
+  D=/tmp/trash/$(date +%s)
+  mkdir -p $D
+  mv $* ${D} \
+  && echo "Moved $* to ${D}"
 }
 
 function getmac ()
@@ -108,5 +114,11 @@ function watch ()
     $CMD
     sleep $DELAY
   done
+}
+
+function pause ()
+{
+  echo "Hit <ENTER> to continue..."
+  read
 }
 

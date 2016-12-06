@@ -17,4 +17,4 @@ C3=${TEAL}
 PS1='%{%B$(errbang)%b${C1}$(gb)%}%{${C2}%}%c %{${C3}%}>> %{${RESET}%}'
 setopt promptsubst
 
-
+bindkey -e
