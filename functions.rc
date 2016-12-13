@@ -1,3 +1,4 @@
+#! /usr/bin/env zsh
 for rc in colors.rc; do
   [ -f $rc ] && source ~/.${rc}
 done
@@ -78,10 +79,31 @@ function getmac ()
   ifconfig $1 | pcregrep -o '(?<=lladdr )([0-9a-f][0-9a-f]:){5}[0-9a-f][0-9a-f]'
 }
 
+function rndmac ()
+{
+  # allowable values for second nibble:
+  # 2 00000010
+  # 6 00000110
+  # a 00001010
+  # e 00001110
+  cat /dev/urandom | tr -dc 0-9a-f \
+            | dd bs=1 count=1 status=none
+  cat /dev/urandom | tr -dc 26ae \
+            | dd bs=1 count=1 status=none
+  echo -n ':'
+  cat /dev/urandom | tr -dc 0-9a-f | dd bs=1 count=10 status=none \
+    | sed -r 's/([0-9a-f][0-9a-f])/\1:/g; s/:$//'
+  echo 
+}
+
 function changemac ()
 {
+  [ $# = 0 ] && echo "Usage: changemac <interface> [mac address]" \
+    && echo "A random mac address will be provided if one is not supplied." \
+    && return
   IF=$1
   MAC=$2
+  [ -n "$MAC" ] || MAC=`rndmac`
   b="${GREEN}[+]${DARKGREEN}"
 
   if [ `getmac ${IF}` = ${MAC} ]; then

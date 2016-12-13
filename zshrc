@@ -12,8 +12,8 @@ function errbang () {
 
 
 C1=${DARKGREY}
-C2=${DARKGREEN}
-C3=${TEAL}
+C2=${BLUE}
+C3=${CYAN}
 PS1='%{%B$(errbang)%b${C1}$(gb)%}%{${C2}%}%c %{${C3}%}>> %{${RESET}%}'
 setopt promptsubst
 
