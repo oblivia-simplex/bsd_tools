@@ -131,9 +131,12 @@ function watch ()
 {
   DELAY=$1
   shift
-  CMD=$*
+  CMD=$1
+  shift
+  ARGS=$*
   while :; do
-    $CMD
+    clear
+    eval "$CMD $ARGS"
     sleep $DELAY
   done
 }
