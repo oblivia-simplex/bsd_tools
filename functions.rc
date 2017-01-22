@@ -64,12 +64,12 @@ function gb () {
   git branch 2> /dev/null | pcregrep -o '(?<=\* ).+' | tr \\n ' '
 }
 
-mkdir -p /tmp/trash
 function rm ()
 {
   [ "x$1" = "x-rf" ] && shift
   D=/tmp/trash/$(date +%s)
   mkdir -p $D
+  chmod 700 $D
   mv $* ${D} \
   && echo "Moved $* to ${D}"
 }
